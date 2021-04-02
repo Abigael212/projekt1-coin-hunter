@@ -8,25 +8,75 @@
 - Na startu hry umístíme minci na náhodnou pozici.
 - Při každém pohybu testujeme, zda se panáček neprotíná s mincí - v JS připravená podmínka pro průnik dvou obdélníků.
 - Pokud panáček sebere minci, posuneme minci na jinou náhodnou pozici.
+BONUS
+- Při posunu panáčka ho natočíme do správného směru.
+- Přidáme score a při sebrání mince přičítáme.
+- Při sebrání mince přehrajeme zvuk.
+- V průběhu hry bude hrát zvukový podkres.
+- Při score > 5 přehrajeme fanfáru a zobrazíme vítěznou hlášku.
 */
 
-let avatar = document.getElementById("panacek");
-let coin = document.getElementById("mince");
-let avatarX = 150;
-let avatarY = 150;
-let avatarWidth = 50;
-let avatarHeight = 65;
-let coinX = (getRandomInt(0, window.innerWidth));
-let coinY = (getRandomInt(0, window.innerHeight));
-let coinWidth = 20;
-let coinHeight = 25;
-avatar.style.left = avatarX.toString() + "px";
-avatar.style.top = avatarY.toString() + "px";
-coin.style.left = coinX.toString() + "px";
-coin.style.top = coinY.toString() + "px";
+
+let avatar, avatarX, avatarY, avatarWidth, avatarHeight;
+let coin, coinX, coinY, coinWidth, coinHeight;
+let windowWidth, windowHeight;
+let score, scoreCount;
+
+avatar = document.getElementById("panacek");
+coin = document.getElementById("mince");
+score = document.getElementById("score");
+windowWidth = window.innerWidth;
+windowHeight = window.innerHeight;
+
 
 /**
- * Moves avatar on window through keyboard arrows, element cannot go beyond window borders
+ * Returns a random integer between min (inclusive) and max (inclusive).
+ */
+function getRandomInt(min, max) {
+	min = Math.ceil(min);
+	max = Math.floor(max);
+	return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+
+/**
+ * Puts elements into starting positions
+ */
+function onPageLoad() {
+	avatarWidth = 64;
+	avatarHeight = 70;
+	coinWidth = 36;
+	coinHeight = 36;
+	avatarX = (windowWidth - avatarWidth) / 2;
+	avatarY = (windowHeight - avatarHeight) / 2;
+	scoreCount = 0;
+	avatarPosition(avatarX, avatarY);
+	coinPosition(windowWidth, windowHeight, coinWidth, coinHeight);
+};
+
+/**
+ * Positions avatar according to current avatarX and avatarY coordinates
+ * @param {*} avatarX 
+ * @param {*} avatarY 
+ */
+function avatarPosition(avatarX, avatarY) {
+	avatar.style.left = avatarX + "px";
+	avatar.style.top = avatarY + "px";
+};
+
+/**
+ * Positions coin in random coordinates within window limits
+ * @param {*} windowWidth 
+ * @param {*} windowHeight 
+ */
+function coinPosition(windowWidth, windowHeight, coinWidth, coinHeight) {
+	coinX = getRandomInt(0, windowWidth - coinWidth);
+	coinY = getRandomInt(0, windowHeight - coinHeight);
+	coin.style.left = coinX + "px";
+	coin.style.top = coinY + "px";
+};
+
+/**
+ * Moves avatar on window through keyboard arrows, element cannot go beyond window borders. If in collision with coin, it moves the coin.
  * @param {*} event 
  */
 function move(event) {
@@ -35,36 +85,26 @@ function move(event) {
 	if (keyStroke === "ArrowLeft") {
 		if (avatarX <= 0) {
 			speed = 0;
-		} else {
-			avatarX = avatarX - speed;
-			avatar.style.left = avatarX.toString() + "px";
-			checkCollision();
 		}
+		avatarX -= speed;
 	} else if (keyStroke === "ArrowRight") {
-		if (avatarX >= window.innerWidth) {
+		if ((avatarX + avatarWidth) >= windowWidth) {
 			speed = 0;
-		} else {
-			avatarX = avatarX + speed;
-			avatar.style.left = avatarX.toString() + "px";
-			checkCollision();
 		}
+		avatarX += speed;
 	} else if (keyStroke === "ArrowUp") {
 		if (avatarY <= 0) {
 			speed = 0;
-		} else {
-			avatarY = avatarY - speed;
-			avatar.style.top = avatarY.toString() + "px";
-			checkCollision();
 		}
+		avatarY -= speed;
 	} else if (keyStroke === "ArrowDown") {
-		if (avatarY >= window.innerHeight) {
+		if ((avatarY + avatarHeight) >= windowHeight) {
 			speed = 0;
-		} else {
-			avatarY = avatarY + speed;
-			avatar.style.top = avatarY.toString() + "px";
-			checkCollision();
 		}
+		avatarY += speed;
 	};
+	avatarPosition(avatarX, avatarY);
+	checkCollision();	
 };
 
 /**
@@ -77,18 +117,13 @@ function checkCollision() {
 		avatarY + avatarHeight < coinY ||
 		coinY + coinHeight < avatarY
 	)) {
-		coinX = getRandomInt(0, window.innerWidth);
-		coinY = getRandomInt(0, window.innerHeight);
-		coin.style.left = coinX.toString() + "px";
-		coin.style.top = coinY.toString() + "px";
-	}
+		coinPosition(windowWidth, windowHeight, coinWidth, coinHeight);
+		scoreCount++;
+		score.innerHTML = scoreCount;
+	};
 };
 
-/**
- * Returns a random integer between min (inclusive) and max (inclusive).
- */
-function getRandomInt(min, max) {
-	min = Math.ceil(min);
-	max = Math.floor(max);
-	return Math.floor(Math.random() * (max - min + 1)) + min;
-}
+// life server extension pre visual studio code - bude ti aktualizovať browser samý :)
+// aby panáčik prešiel doprava a vyšiel kontinuálne zľava a hore-dole :) 
+// otáčanie panáčika pozri evernote
+// skús použiť radšej eventlistener, či ti to bude fungovať
