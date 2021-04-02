@@ -28,8 +28,8 @@ score = document.getElementById("score");
 windowWidth = window.innerWidth;
 windowHeight = window.innerHeight;
 
+window.addEventListener("load", onPageLoad);
 document.addEventListener("keydown", move);
-document.addEventListener("load", onPageLoad());
 
 /**
  * Returns a random integer between min (inclusive) and max (inclusive).
@@ -44,10 +44,10 @@ function getRandomInt(min, max) {
  * Puts elements into starting positions
  */
 function onPageLoad() {
-	avatarWidth = 68;
-	avatarHeight = 74;
-	coinWidth = 36;
-	coinHeight = 36;
+	avatarWidth = avatar.width;
+	avatarHeight = avatar.height;
+	coinWidth = coin.width;
+	coinHeight = coin.height;
 	avatarX = (windowWidth - avatarWidth) / 2;
 	avatarY = (windowHeight - avatarHeight) / 2;
 	scoreCount = 0;
@@ -77,7 +77,6 @@ function coinPosition(windowWidth, windowHeight, coinWidth, coinHeight) {
 	coin.style.top = coinY + "px";
 };
 
-
 /**
  * Moves avatar on window through keyboard arrows, element cannot go beyond window borders. If in collision with coin, it moves the coin.
  * @param {*} event 
@@ -85,27 +84,33 @@ function coinPosition(windowWidth, windowHeight, coinWidth, coinHeight) {
 function move(event) {
 	let keyStroke = event.key;
 	let speed = 5;
+	let direction;
 	if (keyStroke === "ArrowLeft") {
 		if (avatarX <= 0) {
 			speed = 0;
 		}
 		avatarX -= speed;
+		direction = "-vlevo";
 	} else if (keyStroke === "ArrowRight") {
 		if ((avatarX + avatarWidth) >= windowWidth) {
 			speed = 0;
 		}
 		avatarX += speed;
+		direction = "-vpravo";
 	} else if (keyStroke === "ArrowUp") {
 		if (avatarY <= 0) {
 			speed = 0;
 		}
 		avatarY -= speed;
+		direction = "-nahoru";
 	} else if (keyStroke === "ArrowDown") {
 		if ((avatarY + avatarHeight) >= windowHeight) {
 			speed = 0;
 		}
 		avatarY += speed;
+		direction = "";
 	};
+	avatar.src = `obrazky/panacek${direction}.png`
 	avatarPosition(avatarX, avatarY);
 	checkCollision();	
 };
