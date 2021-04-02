@@ -21,10 +21,12 @@ let avatar, avatarX, avatarY, avatarWidth, avatarHeight;
 let coin, coinX, coinY, coinWidth, coinHeight;
 let windowWidth, windowHeight;
 let score, scoreCount;
+let backgroundMusic;
 
 avatar = document.getElementById("panacek");
 coin = document.getElementById("mince");
 score = document.getElementById("score");
+backgroundMusic = document.getElementById("hudba");
 windowWidth = window.innerWidth;
 windowHeight = window.innerHeight;
 
@@ -84,33 +86,32 @@ function coinPosition(windowWidth, windowHeight, coinWidth, coinHeight) {
 function move(event) {
 	let keyStroke = event.key;
 	let speed = 5;
-	let direction;
+	backgroundMusic.play();
 	if (keyStroke === "ArrowLeft") {
 		if (avatarX <= 0) {
 			speed = 0;
 		}
 		avatarX -= speed;
-		direction = "-vlevo";
+		avatar.src = "obrazky/panacek-vlevo.png"
 	} else if (keyStroke === "ArrowRight") {
 		if ((avatarX + avatarWidth) >= windowWidth) {
 			speed = 0;
 		}
 		avatarX += speed;
-		direction = "-vpravo";
+		avatar.src = "obrazky/panacek-vpravo.png"
 	} else if (keyStroke === "ArrowUp") {
 		if (avatarY <= 0) {
 			speed = 0;
 		}
 		avatarY -= speed;
-		direction = "-nahoru";
+		avatar.src = "obrazky/panacek-nahoru.png"
 	} else if (keyStroke === "ArrowDown") {
 		if ((avatarY + avatarHeight) >= windowHeight) {
 			speed = 0;
 		}
 		avatarY += speed;
-		direction = "";
+		avatar.src = "obrazky/panacek.png"
 	};
-	avatar.src = `obrazky/panacek${direction}.png`
 	avatarPosition(avatarX, avatarY);
 	checkCollision();	
 };
