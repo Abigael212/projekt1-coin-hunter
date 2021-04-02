@@ -11,8 +11,8 @@
 BONUS
 - Při posunu panáčka ho natočíme do správného směru.
 - Přidáme score a při sebrání mince přičítáme.
-- Při sebrání mince přehrajeme zvuk.
 - V průběhu hry bude hrát zvukový podkres.
+- Při sebrání mince přehrajeme zvuk.
 - Při score > 5 přehrajeme fanfáru a zobrazíme vítěznou hlášku.
 */
 
@@ -21,12 +21,14 @@ let avatar, avatarX, avatarY, avatarWidth, avatarHeight;
 let coin, coinX, coinY, coinWidth, coinHeight;
 let windowWidth, windowHeight;
 let score, scoreCount;
-let backgroundMusic;
+let backgroundMusic, coinMusic, victoryMusic;
 
 avatar = document.getElementById("panacek");
 coin = document.getElementById("mince");
 score = document.getElementById("score");
 backgroundMusic = document.getElementById("hudba");
+coinMusic = document.getElementById("zvukmince");
+victoryMusic = document.getElementById("zvukfanfara");
 windowWidth = window.innerWidth;
 windowHeight = window.innerHeight;
 
@@ -53,26 +55,22 @@ function onPageLoad() {
 	avatarX = (windowWidth - avatarWidth) / 2;
 	avatarY = (windowHeight - avatarHeight) / 2;
 	scoreCount = 0;
-	avatarPosition(avatarX, avatarY);
-	coinPosition(windowWidth, windowHeight, coinWidth, coinHeight);
+	avatarPosition();
+	coinPosition();
 };
 
 /**
- * Positions avatar according to current avatarX and avatarY coordinates
- * @param {*} avatarX 
- * @param {*} avatarY 
+ * Positions avatar according to current avatarX and avatarY coordinates7
  */
-function avatarPosition(avatarX, avatarY) {
+function avatarPosition() {
 	avatar.style.left = avatarX + "px";
 	avatar.style.top = avatarY + "px";
 };
 
 /**
- * Positions coin in random coordinates within window limits
- * @param {*} windowWidth 
- * @param {*} windowHeight 
+ * Positions coin in random coordinates within window limits7
  */
-function coinPosition(windowWidth, windowHeight, coinWidth, coinHeight) {
+function coinPosition() {
 	coinX = getRandomInt(0, windowWidth - coinWidth);
 	coinY = getRandomInt(0, windowHeight - coinHeight);
 	coin.style.left = coinX + "px";
@@ -89,30 +87,30 @@ function move(event) {
 	backgroundMusic.play();
 	if (keyStroke === "ArrowLeft") {
 		if (avatarX <= 0) {
-			speed = 0;
+			avatarX = windowWidth;
 		}
 		avatarX -= speed;
 		avatar.src = "obrazky/panacek-vlevo.png"
 	} else if (keyStroke === "ArrowRight") {
 		if ((avatarX + avatarWidth) >= windowWidth) {
-			speed = 0;
+			avatarX = 0 - avatarWidth;
 		}
 		avatarX += speed;
 		avatar.src = "obrazky/panacek-vpravo.png"
 	} else if (keyStroke === "ArrowUp") {
 		if (avatarY <= 0) {
-			speed = 0;
+			avatarY = windowHeight;
 		}
 		avatarY -= speed;
 		avatar.src = "obrazky/panacek-nahoru.png"
 	} else if (keyStroke === "ArrowDown") {
 		if ((avatarY + avatarHeight) >= windowHeight) {
-			speed = 0;
+			avatarY = 0 - avatarHeight;
 		}
 		avatarY += speed;
 		avatar.src = "obrazky/panacek.png"
 	};
-	avatarPosition(avatarX, avatarY);
+	avatarPosition();
 	checkCollision();	
 };
 
@@ -126,13 +124,20 @@ function checkCollision() {
 		avatarY + avatarHeight < coinY ||
 		coinY + coinHeight < avatarY
 	)) {
-		coinPosition(windowWidth, windowHeight, coinWidth, coinHeight);
-		scoreCount++;
-		score.innerHTML = scoreCount;
+		coinPosition();
+		addToScore();
+		coinMusic.play();
+		if (scoreCount === 5) {
+			victoryMusic.play();
+			window.alert("You won!")
+		}
 	};
 };
 
-// life server extension pre visual studio code - bude ti aktualizovať browser samý :)
-// aby panáčik prešiel doprava a vyšiel kontinuálne zľava a hore-dole :) 
-// otáčanie panáčika pozri evernote
-// skús použiť radšej eventlistener, či ti to bude fungovať
+/**
+ * Adds 1 point to current score
+ */
+function addToScore() {
+	scoreCount++;
+	score.innerHTML = scoreCount;
+};
