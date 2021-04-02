@@ -28,6 +28,8 @@ score = document.getElementById("score");
 windowWidth = window.innerWidth;
 windowHeight = window.innerHeight;
 
+document.addEventListener("keydown", move);
+document.addEventListener("load", onPageLoad());
 
 /**
  * Returns a random integer between min (inclusive) and max (inclusive).
@@ -42,8 +44,8 @@ function getRandomInt(min, max) {
  * Puts elements into starting positions
  */
 function onPageLoad() {
-	avatarWidth = 64;
-	avatarHeight = 70;
+	avatarWidth = 68;
+	avatarHeight = 74;
 	coinWidth = 36;
 	coinHeight = 36;
 	avatarX = (windowWidth - avatarWidth) / 2;
@@ -74,6 +76,7 @@ function coinPosition(windowWidth, windowHeight, coinWidth, coinHeight) {
 	coin.style.left = coinX + "px";
 	coin.style.top = coinY + "px";
 };
+
 
 /**
  * Moves avatar on window through keyboard arrows, element cannot go beyond window borders. If in collision with coin, it moves the coin.
@@ -108,7 +111,7 @@ function move(event) {
 };
 
 /**
- * If there is an avatar/coin collision, coin changes position
+ * If there is an avatar/coin collision, coin changes position and score+1
  */
 function checkCollision() {
 	if (!(
