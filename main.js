@@ -22,6 +22,7 @@ let coin, coinX, coinY, coinWidth, coinHeight;
 let windowWidth, windowHeight;
 let score, scoreCount;
 let backgroundMusic, coinMusic, victoryMusic;
+let victoryTreshold = 5;
 
 avatar = document.getElementById("panacek");
 coin = document.getElementById("mince");
@@ -111,7 +112,8 @@ function move(event) {
 		avatar.src = "obrazky/panacek.png"
 	};
 	avatarPosition();
-	checkCollision();	
+	checkCollision();
+	checkVictory();
 };
 
 /**
@@ -127,11 +129,7 @@ function checkCollision() {
 		coinPosition();
 		addToScore();
 		coinMusic.play();
-		if (scoreCount === 5) {
-			victoryMusic.play();
-			window.alert("You won!")
-		}
-	};
+	}
 };
 
 /**
@@ -140,4 +138,15 @@ function checkCollision() {
 function addToScore() {
 	scoreCount++;
 	score.innerHTML = scoreCount;
+};
+
+/**
+ * Checks if you have won
+ */
+function checkVictory() {
+	if (scoreCount === victoryTreshold) {
+		victoryMusic.play();
+		// bolo to otravné, tak som to zakomentovala :)
+		// window.alert("You won!")
+	}
 };
