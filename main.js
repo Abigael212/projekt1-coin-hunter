@@ -32,6 +32,7 @@ coinMusic = document.getElementById("zvukmince");
 victoryMusic = document.getElementById("zvukfanfara");
 windowWidth = window.innerWidth;
 windowHeight = window.innerHeight;
+// tieto veci si radšej dávať do onPageLoad fcie, aby si ošetril prípadné chyby, keď to naťahuje leementy ktoré nie sú ešte naloadované
 
 window.addEventListener("load", onPageLoad);
 document.addEventListener("keydown", move);
